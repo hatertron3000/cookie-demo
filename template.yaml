@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cookie-demo
+
+  Sample SAM Template for cookie-demo
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+  Api:
+    Cors:
+      AllowMethods: "'GET,OPTIONS'"
+      AllowOrigin: "'!Ref DOMAIN'"
+
+
+Parameters:
+  DOMAIN:
+    Description: 'Required; The domain to use for cookies (e.g. example.com)'
+    Type: 'String'
+  CORSSUBDOMAIN:
+    Description: 'Required: The subdomain used in the CORS response headers (e.g. www.example.com)'
+    Type: 'String'
+
+Resources:
+  CookieDemoFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cookie-demo-function/
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Environment:
+        Variables:
+          DOMAIN: !Ref DOMAIN
+          CORS_SUBDOMAIN: !Ref CORSSUBDOMAIN
+      Events:
+        CookieDemo:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /set-cookie
+            Method: any
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  CookieDemoApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/set-cookie/"
+  CookieDemoFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt CookieDemoFunction.Arn
+  CookieDemoFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt CookieDemoFunctionRole.Arn
