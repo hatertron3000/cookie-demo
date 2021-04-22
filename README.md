@@ -1,6 +1,6 @@
 # cookie-demo
 
-This is an AWS SAM application that demonstrates the ability for an API on a subdomain such as api.example.com to set a cookie in response to an ajax request from a broser on a subdomain of example.com such as www.example.com.
+This is an AWS SAM application that demonstrates the ability for an API on a subdomain such as api.example.com to set a cookie in response to an ajax request from a browser on a subdomain of example.com such as www.example.com.
 
 ## Prerequisites
 
